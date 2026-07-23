@@ -137,16 +137,8 @@ const INITIAL_PROJECTS = [
 const PortfolioContext = createContext();
 
 export const PortfolioProvider = ({ children }) => {
-  const [profile, setProfile] = useState(() => {
-    const saved = localStorage.getItem('cyber_profile');
-    return saved ? JSON.parse(saved) : INITIAL_PROFILE;
-  });
-
-  const [projects, setProjects] = useState(() => {
-    const saved = localStorage.getItem('cyber_projects');
-    return saved !== null ? JSON.parse(saved) : INITIAL_PROJECTS;
-  });
-
+  const [profile, setProfile] = useState(INITIAL_PROFILE);
+  const [projects, setProjects] = useState(INITIAL_PROJECTS);
   const [token, setToken] = useState(() => localStorage.getItem('cyber_admin_token') || '');
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(!!localStorage.getItem('cyber_admin_token'));
   const [activeTab, setActiveTab] = useState('portfolio');
@@ -157,36 +149,40 @@ export const PortfolioProvider = ({ children }) => {
   const [selectedTag, setSelectedTag] = useState('all');
   const [selectedProject, setSelectedProject] = useState(null);
 
-  useEffect(() => {
-    localStorage.setItem('cyber_profile', JSON.stringify(profile));
-  }, [profile]);
+  // GROUND TRUTH DATABASE FETCH FUNCTION
+  const refreshFromDatabase = async () => {
+    try {
+      const [resProf, resProj] = await Promise.all([
+        fetch('/api/profile'),
+        fetch('/api/projects')
+      ]);
 
-  useEffect(() => {
-    localStorage.setItem('cyber_projects', JSON.stringify(projects));
-  }, [projects]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [resProf, resProj] = await Promise.all([
-          fetch('/api/profile'),
-          fetch('/api/projects')
-        ]);
-        if (resProf.ok) {
-          const pData = await resProf.json();
-          if (pData && pData.name) setProfile(pData);
+      if (resProf.ok) {
+        const pData = await resProf.json();
+        if (pData && pData.name) {
+          setProfile(pData);
+          localStorage.setItem('cyber_profile', JSON.stringify(pData));
         }
-        if (resProj.ok) {
-          const prData = await resProj.json();
-          if (Array.isArray(prData)) setProjects(prData);
-        }
-      } catch (err) {
-        console.log('Using local fallback state.');
       }
-    };
-    fetchData();
+
+      if (resProj.ok) {
+        const prData = await resProj.json();
+        if (Array.isArray(prData)) {
+          setProjects(prData);
+          localStorage.setItem('cyber_projects', JSON.stringify(prData));
+        }
+      }
+    } catch (err) {
+      console.log('Database fetch fallback.');
+    }
+  };
+
+  // Always pull directly from database on mount
+  useEffect(() => {
+    refreshFromDatabase();
   }, []);
 
+  // Strict Login Handler (Verifies against database password hash)
   const loginAdmin = async (password) => {
     try {
       const res = await fetch('/api/auth/login', {
@@ -203,22 +199,11 @@ export const PortfolioProvider = ({ children }) => {
         return { success: true };
       } else {
         const errorData = await res.json();
-        return { success: false, error: errorData.error || 'Invalid credentials' };
+        return { success: false, error: errorData.error || 'Invalid admin passphrase' };
       }
     } catch (e) {
-      console.log('API offline, verifying local active password state');
+      return { success: false, error: 'Database connection offline.' };
     }
-
-    const activePass = localStorage.getItem('cyber_active_pass') || 'admin123';
-    if (password === activePass) {
-      const fakeToken = 'cyber_local_token_admin';
-      setToken(fakeToken);
-      setIsAdminLoggedIn(true);
-      localStorage.setItem('cyber_admin_token', fakeToken);
-      return { success: true };
-    }
-
-    return { success: false, error: 'Invalid admin password.' };
   };
 
   const logoutAdmin = () => {
@@ -228,8 +213,20 @@ export const PortfolioProvider = ({ children }) => {
     setActiveTab('portfolio');
   };
 
-  const updatePassword = (newPass) => {
-    localStorage.setItem('cyber_active_pass', newPass);
+  const updatePassword = async (newPass) => {
+    try {
+      const res = await fetch('/api/auth/change-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ newPassword: newPass })
+      });
+      return res.ok;
+    } catch (err) {
+      return false;
+    }
   };
 
   const addProject = async (projectData) => {
@@ -239,14 +236,8 @@ export const PortfolioProvider = ({ children }) => {
       ...projectData
     };
 
-    setProjects(prev => {
-      const updated = [newProj, ...prev];
-      localStorage.setItem('cyber_projects', JSON.stringify(updated));
-      return updated;
-    });
-
     try {
-      await fetch('/api/projects', {
+      const res = await fetch('/api/projects', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -254,22 +245,21 @@ export const PortfolioProvider = ({ children }) => {
         },
         body: JSON.stringify(newProj)
       });
+      if (res.ok) {
+        await refreshFromDatabase();
+        return;
+      }
     } catch (err) {
-      console.error('API create failed');
+      console.error('API create error:', err);
     }
 
-    return newProj;
+    // Fallback sync
+    setProjects(prev => [newProj, ...prev]);
   };
 
   const updateProject = async (id, updatedData) => {
-    setProjects(prev => {
-      const updated = prev.map(p => String(p.id) === String(id) ? { ...p, ...updatedData } : p);
-      localStorage.setItem('cyber_projects', JSON.stringify(updated));
-      return updated;
-    });
-
     try {
-      await fetch(`/api/projects/${id}`, {
+      const res = await fetch(`/api/projects/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -277,39 +267,41 @@ export const PortfolioProvider = ({ children }) => {
         },
         body: JSON.stringify(updatedData)
       });
+      if (res.ok) {
+        await refreshFromDatabase();
+        return;
+      }
     } catch (err) {
-      console.error('API update failed');
+      console.error('API update error:', err);
     }
+
+    // Fallback sync
+    setProjects(prev => prev.map(p => String(p.id) === String(id) ? { ...p, ...updatedData } : p));
   };
 
   const deleteProject = async (id) => {
-    setProjects(prev => {
-      const updated = prev.filter(p => String(p.id) !== String(id));
-      localStorage.setItem('cyber_projects', JSON.stringify(updated));
-      return updated;
-    });
-
     try {
-      await fetch(`/api/projects/${id}`, {
+      const res = await fetch(`/api/projects/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
+      if (res.ok) {
+        await refreshFromDatabase();
+        return;
+      }
     } catch (err) {
       console.error('API delete error:', err);
     }
+
+    // Fallback sync
+    setProjects(prev => prev.filter(p => String(p.id) !== String(id)));
   };
 
   const updateProfile = async (updatedData) => {
-    setProfile(prev => {
-      const updated = { ...prev, ...updatedData };
-      localStorage.setItem('cyber_profile', JSON.stringify(updated));
-      return updated;
-    });
-
     try {
-      await fetch('/api/profile', {
+      const res = await fetch('/api/profile', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -317,9 +309,16 @@ export const PortfolioProvider = ({ children }) => {
         },
         body: JSON.stringify(updatedData)
       });
+      if (res.ok) {
+        await refreshFromDatabase();
+        return;
+      }
     } catch (err) {
-      console.error('API profile update failed');
+      console.error('API profile update error:', err);
     }
+
+    // Fallback sync
+    setProfile(prev => ({ ...prev, ...updatedData }));
   };
 
   const resetDataToDefault = () => {
@@ -327,7 +326,6 @@ export const PortfolioProvider = ({ children }) => {
     setProjects(INITIAL_PROJECTS);
     localStorage.removeItem('cyber_profile');
     localStorage.removeItem('cyber_projects');
-    localStorage.removeItem('cyber_active_pass');
   };
 
   return (
@@ -354,7 +352,8 @@ export const PortfolioProvider = ({ children }) => {
         updateProject,
         deleteProject,
         updateProfile,
-        resetDataToDefault
+        resetDataToDefault,
+        refreshFromDatabase
       }}
     >
       {children}
