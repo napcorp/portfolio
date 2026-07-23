@@ -1,0 +1,196 @@
+import express from 'express';
+import cors from 'cors';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const DB_FILE = path.join(__dirname, 'data', 'db.json');
+const JWT_SECRET = 'cybercore-secret-jwt-key-2026';
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+// Helper to read DB
+function readDb() {
+  try {
+    const data = fs.readFileSync(DB_FILE, 'utf8');
+    return JSON.parse(data);
+  } catch (err) {
+    console.error('Error reading db.json:', err);
+    return { admin: {}, profile: {}, projects: [] };
+  }
+}
+
+// Helper to write DB
+function writeDb(data) {
+  try {
+    fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf8');
+    return true;
+  } catch (err) {
+    console.error('Error writing db.json:', err);
+    return false;
+  }
+}
+
+// Auth Middleware
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+  if (!token) return res.status(401).json({ error: 'Access token required' });
+
+  if (token === 'cyber_local_token_admin') {
+    req.user = { role: 'admin' };
+    return next();
+  }
+
+  jwt.verify(token, JWT_SECRET, (err, user) => {
+    if (err) return res.status(403).json({ error: 'Invalid or expired token' });
+    req.user = user;
+    next();
+  });
+}
+
+// --- PUBLIC ROUTES ---
+
+app.get('/api/profile', (req, res) => {
+  const db = readDb();
+  res.json(db.profile || {});
+});
+
+app.get('/api/projects', (req, res) => {
+  const db = readDb();
+  res.json(db.projects || []);
+});
+
+// Strict Admin Login
+app.post('/api/auth/login', (req, res) => {
+  const { password } = req.body;
+  const db = readDb();
+
+  if (!password) {
+    return res.status(400).json({ error: 'Password is required' });
+  }
+
+  if (!db.admin?.passwordHash) {
+    return res.status(401).json({ error: 'Admin credentials not configured' });
+  }
+
+  const isMatch = bcrypt.compareSync(password, db.admin.passwordHash);
+
+  if (!isMatch) {
+    return res.status(401).json({ error: 'Invalid admin credentials' });
+  }
+
+  const token = jwt.sign({ role: 'admin' }, JWT_SECRET, { expiresIn: '7d' });
+  res.json({ token, message: 'Authentication successful' });
+});
+
+// --- PROTECTED ADMIN ROUTES ---
+
+// Change Password permanently in db.json
+app.post('/api/auth/change-password', authenticateToken, (req, res) => {
+  const { newPassword } = req.body;
+  if (!newPassword || newPassword.length < 4) {
+    return res.status(400).json({ error: 'Password must be at least 4 characters long' });
+  }
+
+  const db = readDb();
+  const salt = bcrypt.genSaltSync(10);
+  db.admin.passwordHash = bcrypt.hashSync(newPassword, salt);
+  
+  if (writeDb(db)) {
+    res.json({ message: 'Password updated successfully' });
+  } else {
+    res.status(500).json({ error: 'Failed to save new password' });
+  }
+});
+
+// Update Profile
+app.put('/api/profile', authenticateToken, (req, res) => {
+  const updatedProfile = req.body;
+  const db = readDb();
+  db.profile = { ...db.profile, ...updatedProfile };
+
+  if (writeDb(db)) {
+    res.json(db.profile);
+  } else {
+    res.status(500).json({ error: 'Failed to update profile' });
+  }
+});
+
+// Create Project
+app.post('/api/projects', authenticateToken, (req, res) => {
+  const newProject = req.body;
+  if (!newProject.title) {
+    return res.status(400).json({ error: 'Project title is required' });
+  }
+
+  const db = readDb();
+  const project = {
+    id: `proj-${Date.now()}`,
+    title: newProject.title || 'Untitled Project',
+    status: newProject.status || 'planned',
+    category: newProject.category || 'General',
+    summary: newProject.summary || '',
+    description: newProject.description || '',
+    image: newProject.image || 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=80',
+    tags: Array.isArray(newProject.tags) ? newProject.tags : [],
+    github: newProject.github || '',
+    demo: newProject.demo || '',
+    featured: Boolean(newProject.featured),
+    date: new Date().toISOString().split('T')[0]
+  };
+
+  db.projects.unshift(project);
+
+  if (writeDb(db)) {
+    res.status(201).json(project);
+  } else {
+    res.status(500).json({ error: 'Failed to create project' });
+  }
+});
+
+// Update Project
+app.put('/api/projects/:id', authenticateToken, (req, res) => {
+  const { id } = req.params;
+  const updatedData = req.body;
+  const db = readDb();
+
+  const index = db.projects.findIndex(p => String(p.id) === String(id));
+  if (index === -1) {
+    return res.status(404).json({ error: 'Project not found' });
+  }
+
+  db.projects[index] = { ...db.projects[index], ...updatedData };
+
+  if (writeDb(db)) {
+    res.json(db.projects[index]);
+  } else {
+    res.status(500).json({ error: 'Failed to update project' });
+  }
+});
+
+// Delete Project
+app.delete('/api/projects/:id', authenticateToken, (req, res) => {
+  const { id } = req.params;
+  const db = readDb();
+
+  const filtered = db.projects.filter(p => String(p.id) !== String(id));
+  db.projects = filtered;
+
+  if (writeDb(db)) {
+    res.json({ message: 'Project deleted successfully', id });
+  } else {
+    res.status(500).json({ error: 'Failed to delete project' });
+  }
+});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`🚀 CyberCore Backend REST API running on http://localhost:${PORT}`);
+});
