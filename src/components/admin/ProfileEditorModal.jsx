@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { usePortfolio } from '../../context/PortfolioContext';
-import { X, Save, UserCheck, Plus, Trash2, Tag, Layers, Sparkles } from 'lucide-react';
+import { X, Save, UserCheck, Plus, Trash2, Tag, Layers, Sparkles, Share2, Award } from 'lucide-react';
 
 export default function ProfileEditorModal({ onClose }) {
   const { profile, updateProfile } = usePortfolio();
@@ -11,8 +11,9 @@ export default function ProfileEditorModal({ onClose }) {
     bio: profile.bio || '',
     status: profile.status || '',
     location: profile.location || '',
-    yearsExperience: profile.yearsExperience || 5,
+    yearsExperience: profile.yearsExperience !== undefined ? profile.yearsExperience : 7,
     avatar: profile.avatar || '',
+    banner: profile.banner || '',
     socials: {
       github: profile.socials?.github || '',
       linkedin: profile.socials?.linkedin || '',
@@ -100,7 +101,7 @@ export default function ProfileEditorModal({ onClose }) {
         className="fixed inset-0 bg-black/80 backdrop-blur-sm"
       ></div>
 
-      {/* Modal Box with explicit overflow-y-auto and scrollbar support */}
+      {/* Modal Box with smooth vertical scrolling */}
       <div className="relative w-full max-w-3xl max-h-[85vh] overflow-y-auto overflow-x-hidden p-6 sm:p-8 z-10 rounded-2xl bg-[#0E0E11] border border-[#222226] shadow-2xl space-y-6">
         
         {/* Close Button */}
@@ -120,7 +121,7 @@ export default function ProfileEditorModal({ onClose }) {
             <h2 className="text-xl font-extrabold font-heading text-[#FAFAFA]">
               Edit Profile & CMS Settings
             </h2>
-            <p className="text-xs font-mono text-[#8E8E93]">Update Site Name, Capabilities, Tags & Skills</p>
+            <p className="text-xs font-mono text-[#8E8E93]">Update Name, Experience, Social Links, Capabilities, Tags & Skills</p>
           </div>
         </div>
 
@@ -148,19 +149,37 @@ export default function ProfileEditorModal({ onClose }) {
                 required
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                placeholder="Senior Systems Architect"
                 className="w-full px-3.5 py-2.5 rounded-xl bg-[#16161A] border border-[#222226] text-[#FAFAFA] focus:outline-none focus:border-[#383840]"
               />
             </div>
           </div>
 
-          {/* Status & Location */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Experience & Status & Location */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-[#FAFAFA] mb-1.5 font-semibold flex items-center gap-1">
+                <Award className="w-3.5 h-3.5 text-[#38BDF8]" />
+                <span>YEARS OF EXPERIENCE *</span>
+              </label>
+              <input
+                type="number"
+                required
+                min="0"
+                max="50"
+                value={formData.yearsExperience}
+                onChange={(e) => setFormData({ ...formData, yearsExperience: Number(e.target.value) })}
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[#16161A] border border-[#222226] text-[#FAFAFA] focus:outline-none focus:border-[#383840]"
+              />
+            </div>
+
             <div>
               <label className="block text-[#FAFAFA] mb-1.5 font-semibold">STATUS PILL MESSAGE</label>
               <input
                 type="text"
                 value={formData.status}
                 onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                placeholder="Available for Select Contracts"
                 className="w-full px-3.5 py-2.5 rounded-xl bg-[#16161A] border border-[#222226] text-[#FAFAFA] focus:outline-none focus:border-[#383840]"
               />
             </div>
@@ -171,6 +190,7 @@ export default function ProfileEditorModal({ onClose }) {
                 type="text"
                 value={formData.location}
                 onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                placeholder="San Francisco, CA"
                 className="w-full px-3.5 py-2.5 rounded-xl bg-[#16161A] border border-[#222226] text-[#FAFAFA] focus:outline-none focus:border-[#383840]"
               />
             </div>
@@ -185,6 +205,60 @@ export default function ProfileEditorModal({ onClose }) {
               onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
               className="w-full px-3.5 py-2.5 rounded-xl bg-[#16161A] border border-[#222226] text-[#FAFAFA] focus:outline-none font-sans"
             ></textarea>
+          </div>
+
+          {/* SOCIAL LINKS SECTION */}
+          <div className="p-4 rounded-2xl bg-[#16161A] border border-[#222226] space-y-3">
+            <h3 className="text-xs font-bold font-heading text-[#FAFAFA] flex items-center gap-1.5">
+              <Share2 className="w-4 h-4 text-[#38BDF8]" />
+              <span>Social Links & Contact Details</span>
+            </h3>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-[#8E8E93] mb-1">GITHUB URL</label>
+                <input
+                  type="text"
+                  value={formData.socials.github}
+                  onChange={(e) => setFormData({ ...formData, socials: { ...formData.socials, github: e.target.value } })}
+                  placeholder="https://github.com/username"
+                  className="w-full px-3 py-2 rounded-lg bg-[#0E0E11] border border-[#222226] text-[#FAFAFA]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[#8E8E93] mb-1">LINKEDIN URL</label>
+                <input
+                  type="text"
+                  value={formData.socials.linkedin}
+                  onChange={(e) => setFormData({ ...formData, socials: { ...formData.socials, linkedin: e.target.value } })}
+                  placeholder="https://linkedin.com/in/username"
+                  className="w-full px-3 py-2 rounded-lg bg-[#0E0E11] border border-[#222226] text-[#FAFAFA]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[#8E8E93] mb-1">TWITTER / X URL</label>
+                <input
+                  type="text"
+                  value={formData.socials.twitter}
+                  onChange={(e) => setFormData({ ...formData, socials: { ...formData.socials, twitter: e.target.value } })}
+                  placeholder="https://x.com/username"
+                  className="w-full px-3 py-2 rounded-lg bg-[#0E0E11] border border-[#222226] text-[#FAFAFA]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[#8E8E93] mb-1">EMAIL ADDRESS</label>
+                <input
+                  type="email"
+                  value={formData.socials.email}
+                  onChange={(e) => setFormData({ ...formData, socials: { ...formData.socials, email: e.target.value } })}
+                  placeholder="developer@example.com"
+                  className="w-full px-3 py-2 rounded-lg bg-[#0E0E11] border border-[#222226] text-[#FAFAFA]"
+                />
+              </div>
+            </div>
           </div>
 
           {/* MANAGED CAPABILITIES / STANDARDS SECTION */}

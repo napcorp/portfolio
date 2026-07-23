@@ -326,7 +326,7 @@ export default function AdminDashboard() {
             <div className="flex items-center justify-between gap-4 border-b border-[#222226] pb-4">
               <div>
                 <h2 className="text-lg font-heading font-bold text-[#FAFAFA]">Profile Metadata</h2>
-                <p className="text-xs font-mono text-[#8E8E93]">Current bio, status message, social links & skills</p>
+                <p className="text-xs font-mono text-[#8E8E93]">Current bio, experience, status message, social links & skills</p>
               </div>
               <button
                 onClick={() => setShowProfileModal(true)}
@@ -341,15 +341,18 @@ export default function AdminDashboard() {
               <div className="space-y-2 text-[#D4D4D8]">
                 <div>Name: <span className="text-white font-bold">{profile.name}</span></div>
                 <div>Title: <span className="text-[#FAFAFA]">{profile.title}</span></div>
+                <div>Experience: <span className="text-[#38BDF8] font-bold">{profile.yearsExperience !== undefined ? profile.yearsExperience : 7}+ Years</span></div>
                 <div>Status: <span className="text-emerald-400">{profile.status}</span></div>
+                <div>Location: <span className="text-[#FAFAFA]">{profile.location}</span></div>
                 <div>Bio: <p className="text-[#8E8E93] font-sans mt-1 leading-relaxed">{profile.bio}</p></div>
               </div>
 
               <div className="space-y-2 text-[#D4D4D8]">
-                <span className="text-[#8E8E93]">Social Links:</span>
-                <div>GitHub: <span className="text-[#FAFAFA]">{profile.socials?.github}</span></div>
-                <div>LinkedIn: <span className="text-[#FAFAFA]">{profile.socials?.linkedin}</span></div>
-                <div>Email: <span className="text-[#FAFAFA]">{profile.socials?.email}</span></div>
+                <span className="text-[#8E8E93] font-bold uppercase tracking-wider block mb-1">Social Links:</span>
+                <div>GitHub: <span className="text-[#FAFAFA]">{profile.socials?.github || 'Not set'}</span></div>
+                <div>LinkedIn: <span className="text-[#FAFAFA]">{profile.socials?.linkedin || 'Not set'}</span></div>
+                <div>Twitter: <span className="text-[#FAFAFA]">{profile.socials?.twitter || 'Not set'}</span></div>
+                <div>Email: <span className="text-[#FAFAFA]">{profile.socials?.email || 'Not set'}</span></div>
               </div>
             </div>
           </div>
