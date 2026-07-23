@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { PortfolioProvider, usePortfolio } from './context/PortfolioContext';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -9,7 +9,17 @@ import SocialsFooter from './components/SocialsFooter';
 import AdminDashboard from './components/admin/AdminDashboard';
 
 function MainContent() {
-  const { activeTab } = usePortfolio();
+  const { activeTab, profile } = usePortfolio();
+
+  // Dynamic Tab Name Sync (only name, no qualifications)
+  useEffect(() => {
+    const name = profile?.name || 'Alex Mercer';
+    if (activeTab === 'admin') {
+      document.title = `${name} — Admin CMS`;
+    } else {
+      document.title = name;
+    }
+  }, [profile?.name, activeTab]);
 
   // Separate Isolated Admin Page (No Public Header or Public Footer)
   if (activeTab === 'admin') {
