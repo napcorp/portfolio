@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { usePortfolio } from '../../context/PortfolioContext';
 import AdminLogin from './AdminLogin';
 import ProjectFormModal from './ProjectFormModal';
 import ProfileEditorModal from './ProfileEditorModal';
 import { 
-  FolderPlus, Edit, Trash2, UserCheck, KeyRound, Download, RefreshCw, 
-  CheckCircle2, Clock, CalendarDays, Search, Lock, LogOut, ArrowLeft, AlertTriangle, X
+  FolderPlus, Edit, Trash2, UserCheck, KeyRound, Download, Upload, RefreshCw, 
+  CheckCircle2, Clock, CalendarDays, Search, Lock, LogOut, ArrowLeft, AlertTriangle, X, FileUp
 } from 'lucide-react';
 
 export default function AdminDashboard() {
@@ -15,6 +15,7 @@ export default function AdminDashboard() {
     profile, 
     deleteProject, 
     updateProject,
+    importBackupJson,
     resetDataToDefault,
     logoutAdmin,
     setActiveTab,
@@ -30,6 +31,10 @@ export default function AdminDashboard() {
   const [adminStatusFilter, setAdminStatusFilter] = useState('all');
   const [newPassword, setNewPassword] = useState('');
   const [passMsg, setPassMsg] = useState('');
+  const [importStatusMsg, setImportStatusMsg] = useState('');
+
+  // File Input Ref for Backup Import
+  const fileInputRef = useRef(null);
 
   // Custom Delete Confirmation Modal State
   const [projectToDelete, setProjectToDelete] = useState(null);
@@ -69,27 +74,12 @@ export default function AdminDashboard() {
   const handleChangePassword = async (e) => {
     e.preventDefault();
     setPassMsg('');
-    try {
-      const res = await fetch('/api/auth/change-password', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ newPassword })
-      });
-      if (res.ok) {
-        updatePassword(newPassword);
-        setPassMsg('Password updated successfully!');
-        setNewPassword('');
-      } else {
-        const d = await res.json();
-        setPassMsg(d.error || 'Failed to update password');
-      }
-    } catch (err) {
-      updatePassword(newPassword);
-      setPassMsg('Password updated successfully!');
+    const success = await updatePassword(newPassword);
+    if (success) {
+      setPassMsg('Password updated successfully in database!');
       setNewPassword('');
+    } else {
+      setPassMsg('Failed to update password in database');
     }
   };
 
@@ -101,6 +91,29 @@ export default function AdminDashboard() {
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     downloadAnchor.remove();
+  };
+
+  const handleFileSelect = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setImportStatusMsg('');
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      try {
+        const json = JSON.parse(event.target.result);
+        const res = await importBackupJson(json);
+        if (res.success) {
+          setImportStatusMsg('Backup imported successfully into database!');
+        } else {
+          setImportStatusMsg(res.error || 'Failed to import JSON backup');
+        }
+      } catch (err) {
+        setImportStatusMsg('Invalid JSON backup file format');
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = null;
   };
 
   const completedCount = projects.filter(p => p.status === 'completed').length;
@@ -120,7 +133,7 @@ export default function AdminDashboard() {
             <div className="font-heading font-extrabold text-base text-white flex items-center gap-2">
               <span>Admin CMS Dashboard</span>
               <span className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono text-[10px]">
-                Authenticated
+                Database Connected
               </span>
             </div>
           </div>
@@ -358,10 +371,11 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* TAB 3: SETTINGS & BACKUP */}
+        {/* TAB 3: SETTINGS, IMPORT & BACKUP */}
         {activeSubTab === 'settings' && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             
+            {/* Password Management */}
             <div className="brand-card-grid p-6 border border-[#222226] bg-[#0E0E11] space-y-4">
               <h3 className="text-base font-bold font-heading text-[#FAFAFA] flex items-center gap-2">
                 <KeyRound className="w-4 h-4" />
@@ -396,31 +410,58 @@ export default function AdminDashboard() {
               </form>
             </div>
 
+            {/* Database Backup, Re-Import & Reset */}
             <div className="brand-card-grid p-6 border border-[#222226] bg-[#0E0E11] space-y-4">
               <h3 className="text-base font-bold font-heading text-[#FAFAFA] flex items-center gap-2">
                 <Download className="w-4 h-4" />
-                <span>Backup & Reset</span>
+                <span>Database Backup & Import</span>
               </h3>
 
-              <button
-                onClick={handleExportJson}
-                className="btn-white-action px-4 py-2.5 text-xs w-full flex items-center justify-center gap-2 font-bold"
-              >
-                <Download className="w-4 h-4 text-black" />
-                <span>Export Database JSON Backup</span>
-              </button>
+              {importStatusMsg && (
+                <div className="p-3 rounded-lg bg-[#16161A] border border-[#222226] text-[#FAFAFA] font-mono text-xs">
+                  {importStatusMsg}
+                </div>
+              )}
 
+              <div className="space-y-2">
+                <button
+                  onClick={handleExportJson}
+                  className="btn-white-action px-4 py-2.5 text-xs w-full flex items-center justify-center gap-2 font-bold"
+                >
+                  <Download className="w-4 h-4 text-black" />
+                  <span>Export Database JSON Backup</span>
+                </button>
+
+                {/* Hidden File Input for Re-importing Backup JSON */}
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileSelect}
+                  accept=".json"
+                  className="hidden"
+                />
+
+                <button
+                  onClick={() => fileInputRef.current && fileInputRef.current.click()}
+                  className="btn-dark-action px-4 py-2.5 text-xs w-full flex items-center justify-center gap-2 font-bold"
+                >
+                  <FileUp className="w-4 h-4 text-[#38BDF8]" />
+                  <span>Re-Import Downloaded JSON Backup</span>
+                </button>
+              </div>
+
+              {/* Reset to Default Template (CMS ONLY) */}
               <div className="pt-4 border-t border-[#222226]">
                 <button
-                  onClick={() => {
-                    if (window.confirm("Reset all project & profile data back to default template?")) {
-                      resetDataToDefault();
+                  onClick={async () => {
+                    if (window.confirm("Are you sure you want to reset the database to default template data?")) {
+                      await resetDataToDefault();
                     }
                   }}
-                  className="px-4 py-2 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-mono w-full flex items-center justify-center gap-2"
+                  className="px-4 py-2 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-mono w-full flex items-center justify-center gap-2 hover:bg-red-500/20 transition-all"
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
-                  <span>Reset to Default Template</span>
+                  <span>Reset Database to Default Template</span>
                 </button>
               </div>
             </div>
@@ -453,7 +494,7 @@ export default function AdminDashboard() {
             </div>
 
             <p className="text-[#D4D4D8] font-sans leading-relaxed">
-              Are you sure you want to delete <strong className="text-white">"{projectToDelete.title}"</strong>? This will permanently remove it from your portfolio.
+              Are you sure you want to delete <strong className="text-white">"{projectToDelete.title}"</strong>? This will permanently remove it from your database.
             </p>
 
             <div className="flex items-center justify-end gap-3 pt-2">
@@ -479,7 +520,7 @@ export default function AdminDashboard() {
 
       {/* Standalone Admin Footer */}
       <footer className="w-full border-t border-[#222226] bg-[#070709] px-6 py-4 text-center font-mono text-xs text-[#8E8E93]">
-        Admin CMS Security Session // Active Token Protected
+        Database Connected CMS // REST API Active
       </footer>
 
       {/* Modals */}

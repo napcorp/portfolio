@@ -11,11 +11,35 @@ const __dirname = path.dirname(__filename);
 const DB_FILE = path.join(__dirname, '..', 'server', 'data', 'db.json');
 const JWT_SECRET = process.env.JWT_SECRET || 'cybercore-secret-jwt-key-2026';
 
+const DEFAULT_TEMPLATE = {
+  admin: {
+    passwordHash: "$2b$10$k4kuRJQb0fedi6Ir0m/q5OIE.M46mVzXgRdsD.QEXWCuT9ruO6q/m"
+  },
+  profile: {
+    name: "Alex Mercer",
+    title: "Senior Systems Architect & Full-Stack Cybernetic Engineer",
+    bio: "Building scalable decentralized systems, real-time AI pipelines, and high-performance web applications with futuristic UI/UX engineering.",
+    status: "Available for Select Contracts & High-Impact Roles",
+    location: "San Francisco, CA // Global Remote",
+    yearsExperience: 7,
+    projectsCompletedCount: 24,
+    socials: {
+      github: "https://github.com",
+      linkedin: "https://linkedin.com",
+      twitter: "https://x.com",
+      email: "alex.mercer.dev@example.com"
+    },
+    capabilities: [],
+    customTags: ["React", "TypeScript", "Node.js"],
+    skills: []
+  },
+  projects: []
+};
+
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 
-// Memory cache fallback for Serverless environment
 let inMemoryDb = null;
 
 function readDb() {
@@ -25,11 +49,7 @@ function readDb() {
     inMemoryDb = JSON.parse(data);
     return inMemoryDb;
   } catch (err) {
-    inMemoryDb = {
-      admin: { passwordHash: process.env.ADMIN_PASSWORD_HASH || "$2b$10$k4kuRJQb0fedi6Ir0m/q5OIE.M46mVzXgRdsD.QEXWCuT9ruO6q/m" },
-      profile: {},
-      projects: []
-    };
+    inMemoryDb = DEFAULT_TEMPLATE;
     return inMemoryDb;
   }
 }
@@ -38,9 +58,7 @@ function writeDb(data) {
   inMemoryDb = data;
   try {
     fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf8');
-  } catch (err) {
-    // Read-only serverless filesystem fallback
-  }
+  } catch (err) {}
   return true;
 }
 
@@ -61,7 +79,7 @@ function authenticateToken(req, res, next) {
   });
 }
 
-// --- PUBLIC ROUTES ---
+// --- PUBLIC ROUTE HANDLERS ---
 
 app.get('/api/profile', (req, res) => {
   const db = readDb();
@@ -95,7 +113,7 @@ app.post('/api/auth/login', (req, res) => {
   res.json({ token, message: 'Authentication successful' });
 });
 
-// --- PROTECTED ADMIN ROUTES ---
+// --- PROTECTED ROUTE HANDLERS ---
 
 app.post('/api/auth/change-password', authenticateToken, (req, res) => {
   const { newPassword } = req.body;
@@ -169,6 +187,22 @@ app.delete('/api/projects/:id', authenticateToken, (req, res) => {
   db.projects = db.projects.filter(p => String(p.id) !== String(id));
   writeDb(db);
   res.json({ message: 'Project deleted successfully', id });
+});
+
+app.post('/api/import', authenticateToken, (req, res) => {
+  const { profile, projects } = req.body;
+
+  const db = readDb();
+  if (profile) db.profile = profile;
+  if (Array.isArray(projects)) db.projects = projects;
+
+  writeDb(db);
+  res.json({ message: 'Database backup imported successfully', profile: db.profile, projects: db.projects });
+});
+
+app.post('/api/reset', authenticateToken, (req, res) => {
+  writeDb(DEFAULT_TEMPLATE);
+  res.json({ message: 'Database reset to default template', ...DEFAULT_TEMPLATE });
 });
 
 export default app;
