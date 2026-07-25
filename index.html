@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>newpc211's Portfolio</title>
+  <meta name="description"
+    content="Portfolio of newpc211 - Senior Full Stack Engineer specializing in modern web applications, distributed systems, and AI-driven user experiences.">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <!-- Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css">
+  <!-- Early theme init: prevent flash-of-wrong-theme -->
+  <script>
+    (function () {
+      var t = localStorage.getItem('portfolio-theme');
+      if (t === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document.documentElement.style.colorScheme = 'dark';
+      }
+      // Default is light — no attribute needed
+    })();
+  </script>
+</head>
+
+<body>
+  <!-- Radial Background Glows -->
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+  <!-- Header / Navigation -->
+  <header class="site-header" id="site-header">
+    <div class="header-container">
+      <a href="#hero" class="brand-logo">
+        <span class="logo-text">newpc211<span class="logo-dot">.</span>dev</span>
+      </a>
+      <nav class="desktop-nav">
+        <ul class="nav-links">
+          <li><a href="#hero" class="nav-link active">Home</a></li>
+          <li><a href="#about" class="nav-link">About</a></li>
+          <li><a href="#projects" class="nav-link">Projects</a></li>
+          <li><a href="#contact" class="nav-link">Contact</a></li>
+        </ul>
+      </nav>
+      <div class="header-actions">
+        <button class="theme-toggle" id="theme-toggle" aria-label="Toggle Theme">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sun-icon">
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2" />
+            <path d="M12 20v2" />
+            <path d="m4.93 4.93 1.41 1.41" />
+            <path d="m17.66 17.66 1.41 1.41" />
+            <path d="M2 12h2" />
+            <path d="M20 12h2" />
+            <path d="m6.34 17.66-1.41 1.41" />
+            <path d="m19.07 4.93-1.41 1.41" />
+          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="moon-icon">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+          </svg>
+        </button>
+        <a href="#contact" class="btn btn-secondary btn-sm nav-cta">
+          <span>Get in Touch</span>
+          <i data-lucide="arrow-up-right"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+  <main>
+    <!-- Hero / Who Am I Section -->
+    <section class="hero-section" id="hero">
+      <div class="hero-container">
+        <div class="badge-tag">
+          <span class="status-indicator"></span>
+          <span class="badge-text">För kriget det kan, förgöra en man.</span>
+        </div>
+        <h1 class="hero-title">
+          Engineering <span class="text-gradient">advanced and modern</span> digital products & AI experiences.
+        </h1>
+        <p class="hero-subtitle">
+          Hi, I'm <strong class="text-primary">newpc211</strong>, a Full Stack Architect crafting scalable web apps,
+          clean systems, and intuitive user interfaces with modern engineering stacks.
+        </p>
+        <div class="hero-actions">
+          <a href="#projects" class="btn btn-primary">
+            <span>Explore Projects</span>
+            <i data-lucide="sparkles"></i>
+          </a>
+          <a href="#contact" class="btn btn-secondary">
+            <span>Let's Talk</span>
+            <i data-lucide="mail"></i>
+          </a>
+        </div>
+        <div class="hero-code-card">
+          <div class="code-header">
+            <div class="code-dots">
+              <span class="dot red"></span>
+              <span class="dot yellow"></span>
+              <span class="dot green"></span>
+            </div>
+            <div class="code-title">architect.ts</div>
+          </div>
+          <div class="code-body">
+            <pre><code><span class="token-keyword">const</span> <span class="token-variable">developer</span> = <span class="token-keyword">new</span> <span class="token-class">FullStackEngineer</span>({
+  <span class="token-property">name</span>: <span class="token-string">"newpc211"</span>,
+  <span class="token-property">passions</span>: [<span class="token-string">"Modern Web"</span>, <span class="token-string">"Distributed Systems"</span>, <span class="token-string">"AI Agents"</span>],
+  <span class="token-property">focus</span>: <span class="token-string">"Delivering pixel-perfect, scalable digital systems"</span>,
+  <span class="token-property">other names</span>: <span class="token-string">"newpc0426", "napcorp211", "newpc211"</span>
+});
+<span class="token-keyword">await</span> <span class="token-variable">developer</span>.<span class="token-method">buildImpactfulSoftware</span>();</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- About Me Section -->
+    <section class="about-section" id="about">
+      <div class="section-container">
+        <div class="section-header">
+          <div class="section-tag">01 // ABOUT ME</div>
+          <h2 class="section-title">Driven by clean code & thoughtful architecture</h2>
+        </div>
+        <div class="about-grid">
+          <div class="about-card main-bio-card slide-left">
+            <h3>Background & Vision</h3>
+            <p>
+              With over 6+ years of experience building across the stack, I specialize in transforming complex
+              requirements into slick, maintainable software. I thrive at the intersection of frontend engineering
+              excellence and robust backend architecture.
+            </p>
+            <p>
+              Whether designing real-time analytics platforms, architecting API gateways, or developing interactive
+              WebAssembly tooling, my focus remains on performance, accessibility, and high aesthetic standard.
+            </p>
+            <div class="key-stats-row">
+              <div class="stat-item">
+                <span class="stat-number">08+</span>
+                <span class="stat-label">Years Exp.</span>
+              </div>
+              <div class="stat-divider"></div>
+              <div class="stat-item">
+                <span class="stat-number">36+</span>
+                <span class="stat-label">Projects Built</span>
+              </div>
+              <div class="stat-divider"></div>
+              <div class="stat-item">
+                <span class="stat-number">99.9%</span>
+                <span class="stat-label">Uptime Focus</span>
+              </div>
+            </div>
+          </div>
+          <div class="about-card tech-stack-card slide-right">
+            <h3>Technical Toolkit</h3>
+            <div class="tech-category">
+              <span class="category-title">Frontend</span>
+              <div class="pill-group">
+                <span class="tech-pill"><i data-lucide="code-2"></i> TypeScript / Javascript / Java / PHP</span>
+                <span class="tech-pill"><i data-lucide="atom"></i> React / Next.js</span>
+                <span class="tech-pill"><i data-lucide="palette"></i> Tailwind / Vanilla CSS</span>
+                <span class="tech-pill"><i data-lucide="layers"></i> HTML5 / JS (ESNext)</span>
+              </div>
+            </div>
+            <div class="tech-category">
+              <span class="category-title">Backend & Infrastructure</span>
+              <div class="pill-group">
+                <span class="tech-pill"><i data-lucide="server"></i> Node.js / Express</span>
+                <span class="tech-pill"><i data-lucide="cpu"></i> Python / FastAPI</span>
+                <span class="tech-pill"><i data-lucide="database"></i> PostgreSQL / Redis</span>
+                <span class="tech-pill"><i data-lucide="box"></i> Docker & Cloud</span>
+              </div>
+            </div>
+            <div class="tech-category">
+              <span class="category-title">Tooling & Engineering</span>
+              <div class="pill-group">
+                <span class="tech-pill"><i data-lucide="git-branch"></i> Git Workflow</span>
+                <span class="tech-pill"><i data-lucide="zap"></i> Vite / Webpack</span>
+                <span class="tech-pill"><i data-lucide="bot"></i> LLM Integrations</span>
+                <span class="tech-pill"><i data-lucide="shield-check"></i> Jest / CI/CD</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Current Projects Section -->
+    <section class="projects-section" id="projects">
+      <div class="section-container">
+        <div class="section-header">
+          <div class="section-tag">02 // FEATURED WORK</div>
+          <h2 class="section-title">Selected projects & platforms</h2>
+        </div>
+        <div class="projects-grid">
+          <!-- Project Card 1 -->
+          <article class="project-card slide-left">
+            <div class="project-image-wrapper">
+              <img src="project_preview_3.png" alt="Project Preview" class="project-img">
+              <div class="project-overlay">
+                <a href="#" class="icon-link" aria-label="Live Demo">
+                  <i data-lucide="external-link"></i>
+                </a>
+                <a href="https://github.com/napcorp/" target="_blank" rel="noopener noreferrer" class="icon-link"
+                  aria-label="GitHub Repository">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide-github-icon">
+                    <path
+                      d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4">
+                    </path>
+                    <path d="M9 18c-4.51 2-5-2-7-2"></path>
+                  </svg>
+                </a>
+              </div>
+            </div>
+            <div class="project-content">
+              <div class="project-tags">
+                <span class="tag">React</span>
+                <span class="tag">Python</span>
+                <span class="tag">Gemma</span>
+              </div>
+              <h3 class="project-title">CropMate</h3>
+              <p class="project-description">
+                Your Smart Farming Advisor, powered by Gemma 4, it provides real-time data on crop health and status as
+                well as predictive insights
+              </p>
+              <div class="project-footer">
+                <a href="https://cropmate.napden.com/" class="project-link">
+                  <span>Live Website</span>
+                  <i data-lucide="arrow-up-right"></i>
+                </a>
+                <a href="https://github.com/napcorp/cropmatepitch" target="_blank" rel="noopener noreferrer"
+                  class="project-link github-link">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide-github-icon">
+                    <path
+                      d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4">
+                    </path>
+                    <path d="M9 18c-4.51 2-5-2-7-2"></path>
+                  </svg>
+                  <span>Repository</span>
+                </a>
+              </div>
+            </div>
+          </article>
+          <!-- Project Card 2 -->
+          <article class="project-card slide-right">
+            <div class="project-image-wrapper">
+              <img src="project_preview_3.png" alt="Project Preview" class="project-img">
+              <div class="project-overlay">
+                <a href="#" class="icon-link" aria-label="Live Demo">
+                  <i data-lucide="external-link"></i>
+                </a>
+                <a href="https://github.com/napcorp/" target="_blank" rel="noopener noreferrer" class="icon-link"
+                  aria-label="GitHub Repository">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide-github-icon">
+                    <path
+                      d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4">
+                    </path>
+                    <path d="M9 18c-4.51 2-5-2-7-2"></path>
+                  </svg>
+                </a>
+              </div>
+            </div>
+            <div class="project-content">
+              <div class="project-tags">
+                <span class="tag">Tag 1</span>
+                <span class="tag">Tag 2</span>
+                <span class="tag">Tag 3</span>
+              </div>
+              <h3 class="project-title">Project Name</h3>
+              <p class="project-description">
+                Project Description
+              </p>
+              <div class="project-footer">
+                <a href="#" class="project-link">
+                  <span>Live Website</span>
+                  <i data-lucide="arrow-up-right"></i>
+                </a>
+                <a href="https://github.com/napcorp/" target="_blank" rel="noopener noreferrer"
+                  class="project-link github-link">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide-github-icon">
+                    <path
+                      d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4">
+                    </path>
+                    <path d="M9 18c-4.51 2-5-2-7-2"></path>
+                  </svg>
+                  <span>Repository</span>
+                </a>
+              </div>
+            </div>
+          </article>
+          <!-- Project Card 3 -->
+          <article class="project-card slide-left">
+            <div class="project-image-wrapper">
+              <img src="project_preview_3.png" alt="Project Preview" class="project-img">
+              <div class="project-overlay">
+                <a href="#" class="icon-link" aria-label="Live Demo">
+                  <i data-lucide="external-link"></i>
+                </a>
+                <a href="https://github.com/napcorp/" target="_blank" rel="noopener noreferrer" class="icon-link"
+                  aria-label="GitHub Repository">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide-github-icon">
+                    <path
+                      d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4">
+                    </path>
+                    <path d="M9 18c-4.51 2-5-2-7-2"></path>
+                  </svg>
+                </a>
+              </div>
+            </div>
+            <div class="project-content">
+              <div class="project-tags">
+                <span class="tag">Tag 1</span>
+                <span class="tag">Tag 2</span>
+                <span class="tag">Tag 3</span>
+              </div>
+              <h3 class="project-title">Project Name</h3>
+              <p class="project-description">
+                Project Description
+              </p>
+              <div class="project-footer">
+                <a href="#" class="project-link">
+                  <span>Live Website</span>
+                  <i data-lucide="arrow-up-right"></i>
+                </a>
+                <a href="https://github.com/napcorp/" target="_blank" rel="noopener noreferrer"
+                  class="project-link github-link">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide-github-icon">
+                    <path
+                      d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4">
+                    </path>
+                    <path d="M9 18c-4.51 2-5-2-7-2"></path>
+                  </svg>
+                  <span>Repository</span>
+                </a>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+    <!-- Contact Section -->
+    <section class="contact-section" id="contact">
+      <div class="section-container">
+        <div class="section-header">
+          <div class="section-tag">03 // CONTACT & SOCIALS</div>
+          <h2 class="section-title">Let's build something remarkable together</h2>
+        </div>
+        <div class="contact-grid">
+          <div class="contact-info-card slide-left">
+            <h3>Contact Channels</h3>
+            <p>
+              I am open to collaborate on projects or create new things. Feel free to
+              reach out directly through any of these channels:
+            </p>
+            <div class="contact-methods">
+              <a href="https://github.com/napcorp" target="_blank" rel="noopener noreferrer"
+                class="contact-method-item">
+                <div class="icon-box">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide-github-icon">
+                    <path
+                      d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4">
+                    </path>
+                    <path d="M9 18c-4.51 2-5-2-7-2"></path>
+                  </svg>
+                </div>
+                <div class="method-details">
+                  <span class="method-label">GitHub</span>
+                  <span class="method-value">github.com/napcorp</span>
+                </div>
+                <i data-lucide="arrow-up-right" class="chevron"></i>
+              </a>
+              <a href="mailto:napcorp211@gmail.com" class="contact-method-item">
+                <div class="icon-box">
+                  <i data-lucide="mail"></i>
+                </div>
+                <div class="method-details">
+                  <span class="method-label">Direct Email</span>
+                  <span class="method-value">napcorp211@gmail.com</span>
+                </div>
+                <i data-lucide="arrow-up-right" class="chevron"></i>
+              </a>
+              <a href="tel:+18623050626" class="contact-method-item">
+                <div class="icon-box">
+                  <i data-lucide="phone"></i>
+                </div>
+                <div class="method-details">
+                  <span class="method-label">Phone / SMS</span>
+                  <span class="method-value">+1 (862) 305-0626</span>
+                </div>
+                <i data-lucide="arrow-up-right" class="chevron"></i>
+              </a>
+            </div>
+          </div>
+          <div class="contact-form-card slide-right">
+            <h3>Send a Message</h3>
+            <p>
+              I usually respond within 16-24 hours.
+            </p>
+            <form id="contact-form" class="styled-form" action="https://api.web3forms.com/submit" method="POST">
+              <!-- Web3Forms Free Email Service Integration -->
+              <input type="hidden" name="access_key" value="5a784a24-1397-4f34-be59-3d4fd1725b22">
+              <input type="hidden" name="subject" value="New Portfolio Contact Message">
+              <input type="hidden" name="from_name" value="Portfolio Contact Form">
+              <input type="checkbox" name="botcheck" class="hidden" style="display:none;">
+              <div class="form-group">
+                <label for="name" class="form-label">Your Name</label>
+                <input type="text" id="name" name="name" class="form-input" placeholder="e.g. Sarah Connor" required>
+              </div>
+              <div class="form-group">
+                <label for="email" class="form-label">Your Email</label>
+                <input type="email" id="email" name="email" class="form-input" placeholder="youremail@provider.com"
+                  required>
+              </div>
+              <div class="form-group">
+                <label for="message" class="form-label">Message</label>
+                <textarea id="message" name="message" rows="5" class="form-input"
+                  placeholder="Tell me about your project or inquiry..." required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary btn-full">
+                <span>Send Message</span>
+                <i data-lucide="send"></i>
+              </button>
+              <div id="form-status" class="form-status"></div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-left">
+        <a href="#hero" class="brand-logo">
+          <span class="logo-text">newpc211<span class="logo-dot">.</span>dev</span>
+        </a>
+        <p class="copyright-text">
+          &copy; <span id="current-year">2026</span> newpc211. Designed & built with precision.
+        </p>
+      </div>
+      <div class="footer-links">
+        <a href="#hero">Home</a>
+        <a href="#about">About</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <div class="footer-socials">
+        <a href="https://github.com/napcorp" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="lucide-github-icon">
+            <path
+              d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4">
+            </path>
+            <path d="M9 18c-4.51 2-5-2-7-2"></path>
+          </svg>
+        </a>
+        <a href="mailto:napcorp211@gmail.com" aria-label="Email">
+          <i data-lucide="mail"></i>
+        </a>
+        <a href="tel:+18623050626" aria-label="Phone">
+          <i data-lucide="phone"></i>
+        </a>
+      </div>
+    </div>
+  </footer>
+  <!-- Welcome Overlay Modal -->
+  <div class="welcome-modal-overlay" id="welcome-modal">
+    <div class="welcome-modal-card dev-terminal-card">
+      <div class="terminal-header">
+        <div class="code-dots">
+          <span class="dot red"></span>
+          <span class="dot yellow"></span>
+          <span class="dot green"></span>
+        </div>
+        <div class="terminal-title-group">
+          <span class="terminal-title">newpc211 // system_init.ts</span>
+          <button class="welcome-close-btn" id="welcome-close" aria-label="Close Welcome Dialog">&times;</button>
+        </div>
+      </div>
+      <div class="terminal-body">
+        <div class="terminal-badge-row">
+          <span class="terminal-tag"><i data-lucide="terminal"></i> SYSTEM ONLINE</span>
+          <span class="terminal-tag"><i data-lucide="cpu"></i> FULL STACK ARCHITECTURE</span>
+        </div>
+        <h2 class="welcome-title">Engineering advanced <span class="text-gradient">digital products</span> & AI systems
+        </h2>
+        <div class="terminal-code-snippet">
+          <code><span class="token-keyword">import</span> { <span class="token-variable">DeveloperProfile</span> } <span class="token-keyword">from</span> <span class="token-string">"@newpc211/core"</span>;<br><span class="token-keyword">const</span> <span class="token-variable">env</span> = <span class="token-keyword">await</span> <span class="token-class">DeveloperProfile</span>.<span class="token-method">initialize</span>({<br>&nbsp;&nbsp;<span class="token-property">mode</span>: <span class="token-string">"interactive"</span>,<br>&nbsp;&nbsp;<span class="token-property">status</span>: <span class="token-string">"ready"</span><br>});</code>
+        </div>
+        <div class="terminal-actions">
+          <button class="btn btn-primary welcome-enter-btn" id="welcome-enter">
+            <span>Enter Environment</span>
+            <i data-lucide="arrow-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Media Player -->
+  <div class="floating-media-player" id="floating-player">
+    <audio id="audio-element" src="assets/audio/ambient-focus.mp3" preload="auto" loop></audio>
+    <div class="media-info">
+      <span class="media-title">En Livstid I Krig</span>
+      <span class="media-artist">Sabaton</span>
+    </div>
+    <div class="media-controls">
+      <button class="media-btn" id="play-pause-btn" aria-label="Play or Pause">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="play-icon">
+          <polygon points="6 3 20 12 6 21 6 3" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="pause-icon"
+          style="display: none;">
+          <rect x="6" y="4" width="4" height="16" />
+          <rect x="14" y="4" width="4" height="16" />
+        </svg>
+      </button>
+      <button class="media-btn" id="mute-btn" aria-label="Mute or Unmute">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="volume-icon">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="mute-icon"
+          style="display: none;">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+          <line x1="22" y1="9" x2="16" y2="15" />
+          <line x1="16" y1="9" x2="22" y2="15" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="script.js"></script>
+</body>
+
+</html>

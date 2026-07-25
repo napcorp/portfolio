@@ -1,0 +1,9 @@
+{
+  "name": "newpc211-portfolio",
+  "version": "1.0.0",
+  "description": "Developer portfolio site for newpc211.dev",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx -y http-server ./ -p 8080"
+  }
+}
