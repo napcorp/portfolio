@@ -4,6 +4,7 @@
   "description": "Developer portfolio site for newpc211.dev",
   "main": "index.html",
   "scripts": {
+    "build": "echo 'Static HTML site, no build step required.'",
     "start": "npx -y http-server ./ -p 8080"
   }
 }
